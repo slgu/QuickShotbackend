@@ -37,4 +37,12 @@
         <servlet-name>userfind</servlet-name>
         <url-pattern>/user/find</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>stream</servlet-name>
+        <servlet-class>servlet.TopicCreateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>stream</servlet-name>
+        <url-pattern>/stream</url-pattern>
+    </servlet-mapping>
 </web-app>

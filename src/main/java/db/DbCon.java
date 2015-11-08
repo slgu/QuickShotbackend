@@ -5,6 +5,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.QueryBuilder;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSInputFile;
 import config.Config;
 import net.spy.memcached.*;
 import net.spy.memcached.auth.AuthDescriptor;
@@ -19,6 +21,8 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.river.RiverIndexName;
 import static org.elasticsearch.index.query.QueryBuilders.*;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -33,6 +37,7 @@ public class DbCon {
     public static MongoDatabase mongodb = null;
     public static MemcachedClient memclient = null;
     public static Client esclient = null;
+    public static GridFS gfsPhoto = null;
     static {
         try {
             mongoclient = new MongoClient(new ServerAddress(InetAddress.getByName(Config.MongoIp), Config.MongoPort));
@@ -40,6 +45,7 @@ public class DbCon {
             memclient = new MemcachedClient(AddrUtil.getAddresses(Config.MemCacheEP));
             esclient = new TransportClient()
                     .addTransportAddress(new InetSocketTransportAddress(Config.EsIp, 9300));
+            gfsPhoto = new GridFS(mongoclient.getDB(Config.MongoDb));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -47,7 +53,12 @@ public class DbCon {
             e.printStackTrace();
         }
     }
-    public static void main(String [] args) {
+    public static void main(String [] args) throws IOException{
+        File imageFile = new File("/Users/slgu1/aws/cloudfinalproject/gen.txt");
+        GridFS gfsPhoto = new GridFS(mongoclient.getDB(Config.MongoDb));
+        GridFSInputFile gfsFile = gfsPhoto.createFile(imageFile);
+        gfsFile.setFilename("gen.txt");
+        gfsFile.save();
         /*
         String [] names = {
                 "slgu nash",
