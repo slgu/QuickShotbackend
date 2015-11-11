@@ -97,7 +97,6 @@ public class User {
             return false;
     }
     public static List <User> puzzyFind(String username) {
-        /* TODO elastic search */
         SearchResponse res = DbCon.esclient.prepareSearch("cloud").setTypes("users").setQuery(
                 fuzzyQuery("name", username)
         ).execute().actionGet();

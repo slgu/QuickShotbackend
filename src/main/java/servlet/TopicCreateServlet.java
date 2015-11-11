@@ -1,5 +1,4 @@
 package servlet;
-
 import db.Topic;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -8,6 +7,7 @@ import org.bson.ByteBuf;
 import org.elasticsearch.action.percolate.PercolateResponse;
 import org.elasticsearch.common.util.CancellableThreads;
 import org.elasticsearch.index.mapper.ParseContext;
+import sun.tools.jconsole.HTMLPane;
 import util.HttpUtil;
 import util.Util;
 import javax.servlet.ServletException;
@@ -32,13 +32,15 @@ import static java.nio.file.StandardOpenOption.READ;
 /**
  * Created by slgu1 on 11/7/15.
  */
+
 @WebServlet("/uploadfile")
 @MultipartConfig
 public class TopicCreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         /* user session */
-        if (HttpUtil.checkLogin(req)== null) {
+        String user_id = HttpUtil.checkLogin(req);
+        if (user_id== null) {
             HttpUtil.writeResp(resp, 1);
             return;
         }

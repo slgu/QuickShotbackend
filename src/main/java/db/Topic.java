@@ -1,8 +1,14 @@
 package db;
 
+import com.google.gson.Gson;
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
 import config.Config;
 import org.bson.Document;
+import org.elasticsearch.search.aggregations.bucket.significant.SignificantTermsAggregatorFactory;
 import util.Util;
+
+import java.util.HashMap;
 
 /**
  * Created by slgu1 on 11/5/15.
@@ -15,6 +21,15 @@ public class Topic {
     private int like = 0;
     private String lat = "";
     private String lon = "";
+
+    public String[] getComment_list() {
+        return comment_list;
+    }
+
+    public void setComment_list(String[] comment_list) {
+        this.comment_list = comment_list;
+    }
+
     private String [] comment_list = new String[]{};
     private String user_uid = "";
     public String getUser_uid() {
@@ -76,12 +91,41 @@ public class Topic {
     public String getLon() {
         return lon;
     }
-
+    public static Topic getByUid(String uid) {
+        FindIterable <Document> iter = DbCon.mongodb.getCollection(Config.TopicConnection)
+                .find(new Document("uid", uid));
+        Topic topic = null;
+        if (iter.iterator().hasNext()) {
+            Document doc = iter.iterator().next();
+            topic = new Topic();
+            topic.setTitle((String)doc.get("title"));
+            topic.setUid((String) doc.get("uid"));
+            topic.setDesc((String) doc.get("description"));
+            topic.setLon((String) doc.get("lon"));
+            topic.setLat((String) doc.get("lat"));
+            topic.setLike((Integer) doc.get("like"));
+            topic.setVideo_uid((String) doc.get("video_uid"));
+            topic.setComment_list((String [])doc.get("comment_list"));
+        }
+        return topic;
+    }
     public void setLon(String lon) {
         this.lon = lon;
     }
     private boolean validate() {
         return Util.checkFloat(lat) && Util.checkFloat(lon);
+    }
+    public String toJson() {
+        HashMap <String, Object> mp = new HashMap<String, Object>();
+        mp.put("uid", getUid());
+        mp.put("title", getTitle());
+        mp.put("description", getDesc());
+        mp.put("lat", getLat());
+        mp.put("lon", getLon());
+        mp.put("video_uid", getVideo_uid());
+        mp.put("comment_list", getComment_list());
+        mp.put("like", getLike());
+        return new Gson().toJson(mp);
     }
     public boolean insert() {
         //validate first
