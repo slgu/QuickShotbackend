@@ -38,6 +38,8 @@ public class UserLoginServlet extends HttpServlet {
         user.setName(username);
         user.setPasswd(Util.encrypt(passwd));
         if (user.checkDb()) {
+            // save session
+            req.getSession().setAttribute("uid", user.getUid());
             HttpUtil.writeResp(resp, 0);
         }
         else {

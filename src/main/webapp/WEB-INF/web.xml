@@ -39,7 +39,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>stream</servlet-name>
-        <servlet-class>servlet.TopicCreateServlet</servlet-class>
+        <servlet-class>servlet.VideoShowServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>stream</servlet-name>

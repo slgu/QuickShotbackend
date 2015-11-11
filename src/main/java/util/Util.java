@@ -19,19 +19,19 @@ public class Util {
             byte[] thedigest = md.digest(bytesOfMessage);
             StringBuilder md5StrBuff = new StringBuilder();
             for (int i = 0; i < thedigest.length; i++) {
-                if (Integer.toHexString(0xFF & thedigest[i]).length() == 1){
+                if (Integer.toHexString(0xFF & thedigest[i]).length() == 1) {
                     md5StrBuff.append("0").append(
                             Integer.toHexString(0xFF & thedigest[i]));
-                }else{
+                } else {
                     md5StrBuff.append(Integer.toHexString(0xFF & thedigest[i]));
                 }
             }
             return md5StrBuff.toString();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
+
     public static String random(int number) {
         StringBuilder res = new StringBuilder();
         Random random = new Random();
@@ -40,7 +40,8 @@ public class Util {
         }
         return res.toString();
     }
-    public static void sendEmail(String email, String code) throws AddressException, MessagingException{
+
+    public static void sendEmail(String email, String code) throws AddressException, MessagingException {
         Properties props = System.getProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.port", 25);
@@ -60,35 +61,33 @@ public class Util {
         msg.setFrom(new InternetAddress("sg3301@columbia.edu"));
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
         msg.setSubject("cloud lzgg verify email");
-        msg.setContent(String.format("your lzgg cloud code is %s", code),"text/plain");
+        msg.setContent(String.format("your lzgg cloud code is %s", code), "text/plain");
 
         // Create a transport.
         Transport transport = session.getTransport();
 
         // Send the message.
-        try
-        {
+        try {
             System.out.println("Attempting to send an email through the Amazon SES SMTP interface...");
             // Connect to Amazon SES using the SMTP username and password you specified above.
             transport.connect(Config.SMTPServer, Config.SMTPUsername, Config.SMTPPasswd);
-                    // Send the email.
+            // Send the email.
             System.out.println("Email sent!");
             transport.sendMessage(msg, msg.getAllRecipients());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("The email was not sent.");
             System.out.println("Error message: " + ex.getMessage());
-        }
-        finally
-        {
+        } finally {
             // Close and terminate the connection.
             transport.close();
         }
     }
+
     public static String uuid() {
         return UUID.randomUUID().toString();
     }
-    public static void main(String [] args) {
+
+    public static void main(String[] args) {
         /*
         try {
             sendEmail("blackhero98@gmail.com", "142857");
@@ -98,5 +97,17 @@ public class Util {
         }
         */
         //System.out.println(encrypt("slgu"));
+        //checkFloat("37.5a");
     }
+
+    public static boolean checkFloat(String uid) {
+        try {
+            Float a = Float.parseFloat(uid);
+        }
+        catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
 }

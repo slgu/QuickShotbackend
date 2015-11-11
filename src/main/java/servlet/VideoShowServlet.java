@@ -63,22 +63,6 @@ public class VideoShowServlet extends HttpServlet{
         resp.setHeader("Content-Range", String.format("bytes %s-%s/%s", start, end, len));
         resp.setHeader("Content-Length", String.format("%s", contentLength));
         resp.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-
-        /*
-        int bytesRead;
-        int bytesLeft = contentLength;
-        ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);
-        Path video = Paths.get("/Users/slgu1/Desktop/", "test.mp4");
-        SeekableByteChannel input = Files.newByteChannel(video, READ);
-        OutputStream output = resp.getOutputStream();
-        input.position(start);
-        while ((bytesRead = input.read(buffer)) != -1 && bytesLeft > 0) {
-            System.out.println(bytesRead);
-            buffer.clear();
-            output.write(buffer.array(), 0, bytesLeft < bytesRead ? bytesLeft : bytesRead);
-            bytesLeft -= bytesRead;
-        }
-        */
         int bytesRead;
         int bytesLeft = contentLength;
         ByteBuffer buffer = ByteBuffer.allocate(BUFFER_LENGTH);

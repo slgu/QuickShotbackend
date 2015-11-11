@@ -2,6 +2,7 @@ package util;
 
 import com.google.gson.Gson;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,5 +16,8 @@ public class HttpUtil {
         res.put("status", code);
         resp.getWriter().write(new Gson().toJson(res));
         return;
+    }
+    public static String checkLogin(HttpServletRequest req) {
+        return (String)req.getSession().getAttribute("user");
     }
 }

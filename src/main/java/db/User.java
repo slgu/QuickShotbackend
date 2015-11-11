@@ -88,8 +88,11 @@ public class User {
                 new Document().append("name", name)
                         .append("passwd", passwd)
         );
-        if (res.iterator().hasNext())
+        if (res.iterator().hasNext()) {
+            Document tmp = res.iterator().next();
+            setUid((String)tmp.get("uid"));
             return true;
+        }
         else
             return false;
     }

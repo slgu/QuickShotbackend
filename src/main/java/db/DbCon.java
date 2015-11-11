@@ -54,10 +54,10 @@ public class DbCon {
         }
     }
     public static void main(String [] args) throws IOException{
-        File imageFile = new File("/Users/slgu1/aws/cloudfinalproject/gen.txt");
+        File imageFile = new File("/Users/slgu1/Desktop/test.mp4");
         GridFS gfsPhoto = new GridFS(mongoclient.getDB(Config.MongoDb));
         GridFSInputFile gfsFile = gfsPhoto.createFile(imageFile);
-        gfsFile.setFilename("gen.txt");
+        gfsFile.setFilename("test.mp4");
         gfsFile.save();
         /*
         String [] names = {
