@@ -1,4 +1,4 @@
-package servlet;
+package servlet.topic;
 
 import com.google.gson.Gson;
 import db.Topic;

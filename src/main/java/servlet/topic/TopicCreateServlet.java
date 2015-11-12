@@ -1,4 +1,4 @@
-package servlet;
+package servlet.topic;
 import db.Topic;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;

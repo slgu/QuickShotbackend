@@ -1,4 +1,4 @@
-package servlet;
+package servlet.video;
 
 import com.mongodb.gridfs.GridFSDBFile;
 import config.Config;

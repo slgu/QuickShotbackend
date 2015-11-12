@@ -1,4 +1,4 @@
-package servlet;
+package servlet.user;
 
 import com.google.gson.Gson;
 import db.User;

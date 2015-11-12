@@ -5,10 +5,15 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import config.Config;
 import org.bson.Document;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.bucket.significant.SignificantTermsAggregatorFactory;
 import util.Util;
 
-import java.util.HashMap;
+import java.util.*;
+
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 
 /**
  * Created by slgu1 on 11/5/15.
@@ -91,6 +96,20 @@ public class Topic {
     public String getLon() {
         return lon;
     }
+    public static List <Topic> documentSearch(String desc) {
+        SearchResponse res = DbCon.esclient.prepareSearch("cloud").setTypes("topics").setQuery(
+                QueryBuilders.matchQuery("desc", desc)
+        ).execute().actionGet();
+        LinkedList <Topic> queryres = new LinkedList<Topic>();
+        for (SearchHit hit:res.getHits().getHits()) {
+            Topic topic = new Topic();
+            topic.setUid((String)hit.getSource().get("uid"));
+            topic.setDesc((String)hit.getSource().get("desc"));
+            topic.setTitle((String)hit.getSource().get("title"));
+            queryres.add(topic);
+        }
+        return queryres;
+    }
     public static Topic getByUid(String uid) {
         FindIterable <Document> iter = DbCon.mongodb.getCollection(Config.TopicConnection)
                 .find(new Document("uid", uid));
@@ -147,6 +166,21 @@ public class Topic {
         }
         catch (Exception e) {
             return false;
+        }
+        /* insert into elastic search */
+        Map <String, Object> mp = new HashMap<String, Object>();
+        mp.put("uid", uid);
+        mp.put("description", desc);
+        Map <String, Float> mpLatLon = new HashMap<String, Float>();
+        mpLatLon.put("lat", Float.parseFloat(lat));
+        mpLatLon.put("lon", Float.parseFloat(lon));
+        mp.put("location", mpLatLon);
+        mp.put("like", like);
+        mp.put("title", title);
+        if (!DbCon.esclient.prepareIndex("cloud", "topics").setSource(
+                new Gson().toJson(mp)
+        ).get().isCreated()) {
+            System.out.println("ES create error");
         }
         return true;
     }
