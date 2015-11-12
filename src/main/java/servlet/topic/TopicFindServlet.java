@@ -43,7 +43,6 @@ public class TopicFindServlet extends HttpServlet {
                 mp.put("title", topic.getTitle());
                 jsonres.add(mp);
             }
-
         }
         else {
 
