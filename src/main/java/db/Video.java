@@ -12,6 +12,7 @@ import java.util.UUID;
 /**
  * Created by slgu1 on 11/7/15.
  */
+/* No use now */
 public class Video {
     private InputStream stream;
     public Video(InputStream stream) {

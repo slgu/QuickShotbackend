@@ -27,15 +27,14 @@ public class Topic {
     private String lat = "";
     private String lon = "";
 
-    public String[] getComment_list() {
+    public ArrayList <String> getComment_list() {
         return comment_list;
     }
-
-    public void setComment_list(String[] comment_list) {
+    public void setComment_list(ArrayList <String>  comment_list) {
         this.comment_list = comment_list;
     }
 
-    private String [] comment_list = new String[]{};
+    private ArrayList <String>  comment_list = new ArrayList<String>();
     private String user_uid = "";
     public String getUser_uid() {
         return user_uid;
@@ -124,7 +123,7 @@ public class Topic {
             topic.setLat((String) doc.get("lat"));
             topic.setLike((Integer) doc.get("like"));
             topic.setVideo_uid((String) doc.get("video_uid"));
-            topic.setComment_list((String [])doc.get("comment_list"));
+            topic.setComment_list((ArrayList <String>)doc.get("comment_list"));
         }
         return topic;
     }
@@ -148,8 +147,10 @@ public class Topic {
     }
     public boolean insert() {
         //validate first
-        if (!validate())
+        if (!validate()) {
+            System.out.println("nima");
             return false;
+        }
         setLike(0);
         setUid(Util.uuid());
         Document doc = new Document();
@@ -165,6 +166,7 @@ public class Topic {
                     .insertOne(doc);
         }
         catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         /* insert into elastic search */

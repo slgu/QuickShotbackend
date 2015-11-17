@@ -7,7 +7,7 @@ import org.bson.ByteBuf;
 import org.elasticsearch.action.percolate.PercolateResponse;
 import org.elasticsearch.common.util.CancellableThreads;
 import org.elasticsearch.index.mapper.ParseContext;
-import sun.tools.jconsole.HTMLPane;
+import util.AwsUtil;
 import util.HttpUtil;
 import util.Util;
 import javax.servlet.ServletException;
@@ -39,11 +39,14 @@ public class TopicCreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         /* user session */
+        /*
         String user_id = HttpUtil.checkLogin(req);
         if (user_id== null) {
             HttpUtil.writeResp(resp, 1);
             return;
         }
+        */
+        String user_id = "123";
         String title = req.getParameter("title");
         String desc = req.getParameter("description");
         String lat = req.getParameter("lat");
@@ -54,27 +57,24 @@ public class TopicCreateServlet extends HttpServlet {
         }
         if (!Util.checkFloat(lat) || !Util.checkFloat(lon)) {
             HttpUtil.writeResp(resp, 3);
+            return;
         }
         Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
         if (!filePart.getContentType().equals("video/mp4")) {
             HttpUtil.writeResp(resp, 4);
             return;
         }
-        String fileName = filePart.getSubmittedFileName();
         InputStream fileContent = filePart.getInputStream();
         /* get video and store */
         //store video in gridfs and return an uid
-        String video_uid = "";
-        try {
-            video_uid = new db.Video(fileContent).store();
-        }
-        catch (Exception e) {
+        String video_uid = AwsUtil.uploadS3(filePart);
+        if (video_uid == null) {
             HttpUtil.writeResp(resp, 5);
             return;
         }
         Topic topic = new Topic();
         topic.setLat(lat);
-        topic.setLat(lon);
+        topic.setLon(lon);
         topic.setTitle(title);
         topic.setDesc(desc);
         topic.setVideo_uid(video_uid);

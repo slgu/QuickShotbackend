@@ -101,10 +101,12 @@ public class Util {
     }
 
     public static boolean checkFloat(String uid) {
+        System.out.println(uid);
         try {
             Float a = Float.parseFloat(uid);
         }
         catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;

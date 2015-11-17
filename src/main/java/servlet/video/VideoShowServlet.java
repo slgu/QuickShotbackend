@@ -25,6 +25,10 @@ import static java.nio.file.StandardOpenOption.READ;
 /**
  * Created by slgu1 on 11/8/15.
  */
+/* Maybe for short video we don't need stream, just S3 for storage and
+    download to watch, and for reliability and scalable, managable (we don't need to add more servers to manage
+    mongodb clusters
+ */
 public class VideoShowServlet extends HttpServlet{
     private static final Pattern RANGE_PATTERN = Pattern.compile("bytes=(?<start>\\d*)-(?<end>\\d*)");
     private static final int BUFFER_LENGTH = 1024 * 16;

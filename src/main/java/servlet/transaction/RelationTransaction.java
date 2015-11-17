@@ -120,7 +120,7 @@ public class RelationTransaction {
                     catch (InterruptedException e) {
 
                     }
-                    Date dateAfterThirtyMinute = new Date(new Date().getTime() + 60 * 1000 * 30);
+                    Date dateAfterThirtyMinute = new Date(new Date().getTime() - 60 * 1000 * 30);
                     Document result_doc = null;
                     try {
                         result_doc = DbCon.mongodb.getCollection(Config.TransactionConnection)

@@ -147,9 +147,11 @@ public class User {
     private static final Pattern email_pattern = Pattern.compile(EMAIL_PATTERN);
     private static final Pattern alpha_pattern = Pattern.compile("^[_A-Za-z0-9]+$");
     public static void main(String [] args) {
+        /*
         User user = new User();
-        user.setName("slgu1");
-        user.setEmail("sg3301@columbia.edu");
+        user.setName("slgu2");
+        user.setEmail("sg3302@columbia.edu");
         System.out.println(user.insert());
+        */
     }
 }
