@@ -19,7 +19,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.river.RiverIndexName;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import java.io.File;
@@ -43,8 +42,8 @@ public class DbCon {
             mongoclient = new MongoClient(new ServerAddress(InetAddress.getByName(Config.MongoIp), Config.MongoPort));
             mongodb = mongoclient.getDatabase(Config.MongoDb);
             memclient = new MemcachedClient(AddrUtil.getAddresses(Config.MemCacheEP));
-            esclient = new TransportClient()
-                    .addTransportAddress(new InetSocketTransportAddress(Config.EsIp, 9300));
+            esclient = TransportClient.builder().build()
+                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(Config.EsIp), 9300));
             gfsPhoto = new GridFS(mongoclient.getDB(Config.MongoDb));
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -54,7 +53,9 @@ public class DbCon {
         }
     }
     public static void main(String [] args) throws IOException{
+        while (true) {
 
+        }
         /*
         File imageFile = new File("/Users/slgu1/Desktop/test.mp4");
         GridFS gfsPhoto = new GridFS(mongoclient.getDB(Config.MongoDb));

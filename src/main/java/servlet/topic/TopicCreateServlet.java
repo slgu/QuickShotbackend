@@ -39,14 +39,11 @@ public class TopicCreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         /* user session */
-        /*
         String user_id = HttpUtil.checkLogin(req);
         if (user_id== null) {
             HttpUtil.writeResp(resp, 1);
             return;
         }
-        */
-        String user_id = "123";
         String title = req.getParameter("title");
         String desc = req.getParameter("description");
         String lat = req.getParameter("lat");

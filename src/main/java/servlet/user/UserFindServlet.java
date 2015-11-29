@@ -2,7 +2,6 @@ package servlet.user;
 
 import com.google.gson.Gson;
 import db.User;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,14 +19,17 @@ public class UserFindServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String findString = req.getParameter("username");
+        if (findString == null)
+            return;
         List <User> res = User.puzzyFind(findString);
-        LinkedList <Map <String, String> > jsonres = new LinkedList<Map<String, String>>();
-        for (User user: res) {
-            Map <String, String> mp = new HashMap<String, String>();
-            mp.put("uid", user.getUid());
-            mp.put("name", user.getName());
-            jsonres.add(mp);
-        }
-        resp.getWriter().write(new Gson().toJson(jsonres));
+        resp.getWriter().write(new Gson().toJson(res));
+    }
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String findString = req.getParameter("username");
+        if (findString == null)
+            return;
+        List <User> res = User.puzzyFind(findString);
+        resp.getWriter().write(new Gson().toJson(res));
     }
 }

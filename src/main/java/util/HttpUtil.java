@@ -1,6 +1,7 @@
 package util;
 
 import com.google.gson.Gson;
+import db.DbCon;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,8 @@ public class HttpUtil {
         return;
     }
     public static String checkLogin(HttpServletRequest req) {
-        return (String)req.getSession().getAttribute("user");
+        /* use memcache to check */
+        String session_key = req.getParameter("session_key");
+        return (String)DbCon.memclient.get(session_key);
     }
 }

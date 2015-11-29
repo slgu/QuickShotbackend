@@ -4,8 +4,10 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import config.Config;
 
 import javax.servlet.http.Part;
@@ -19,8 +21,11 @@ import java.io.InputStream;
 public class AwsUtil {
     public static AmazonS3 s3 = new AmazonS3Client();
     /*return store key*/
+    private static String makeName(String uid) {
+        return "object-" + uid + ".mp4";
+    }
     public static String uploadS3(Part filePart) {
-        String key = "object-" + Util.uuid();
+        String key = makeName(Util.uuid());
         try {
             ObjectMetadata omd = new ObjectMetadata();
             omd.setContentType(filePart.getContentType());
@@ -49,5 +54,9 @@ public class AwsUtil {
             return null;
         }
         return key;
+    }
+    public static S3Object downloadS3(String key) {
+        S3Object object =  s3.getObject(new GetObjectRequest(Config.videoBucketName, key));
+        return object;
     }
 }

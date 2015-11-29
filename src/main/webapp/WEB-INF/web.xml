@@ -7,7 +7,7 @@
         version="3.1">
     <servlet>
         <servlet-name>userlogin</servlet-name>
-        <servlet-class>servlet.UserLoginServlet</servlet-class>
+        <servlet-class>servlet.user.UserLoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>userlogin</servlet-name>
@@ -15,7 +15,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>userregister</servlet-name>
-        <servlet-class>servlet.UserRegisterServlet</servlet-class>
+        <servlet-class>servlet.user.UserRegisterServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>userregister</servlet-name>
@@ -23,7 +23,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>verify</servlet-name>
-        <servlet-class>servlet.VerifyServlet</servlet-class>
+        <servlet-class>servlet.user.VerifyServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>verify</servlet-name>
@@ -31,7 +31,16 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>userfind</servlet-name>
-        <servlet-class>servlet.UserFindServlet</servlet-class>
+        <servlet-class>servlet.user.UserFindServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>userget</servlet-name>
+        <url-pattern>/user/get</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>userget</servlet-name>
+        <servlet-class>servlet.user.UserGetServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>userfind</servlet-name>
@@ -39,10 +48,18 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>stream</servlet-name>
-        <servlet-class>servlet.VideoShowServlet</servlet-class>
+        <servlet-class>servlet.video.VideoShowServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>stream</servlet-name>
         <url-pattern>/stream</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>download</servlet-name>
+        <servlet-class>servlet.video.VideoDownloadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>download</servlet-name>
+        <url-pattern>/video/download</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -35,6 +35,34 @@ public class User {
     private String passwd = "";
     private String [] friends_list = new String[]{};
     private String [] topics_list = new String[]{};
+    private int sex = 0;
+    private int age = 0;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    private String address = "";
     public String getUid() {
         return uid;
     }
@@ -96,15 +124,38 @@ public class User {
         else
             return false;
     }
+
+    public static User find(String uid) {
+        FindIterable <Document> res = DbCon.mongodb.getCollection(Config.UserConnection).find(
+                new Document().append("uid", uid)
+        );
+        if (res.iterator().hasNext()) {
+            Document tmp = res.iterator().next();
+            User user = new User();
+            user.setAddress((String) tmp.get("address"));
+            user.setAge((Integer) tmp.get("age"));
+            user.setEmail((String) tmp.get("email"));
+            String [] tmp_arr = new String[] {};
+            user.setFriends_list(((List<String>) tmp.get("friends_list")).toArray(tmp_arr));
+            user.setTopics_list(((List<String>) tmp.get("topics_list")).toArray(tmp_arr));
+            user.setName((String) tmp.get("name"));
+            user.setUid(uid);
+            return user;
+        }
+        else
+            return null;
+    }
+
     public static List <User> puzzyFind(String username) {
         SearchResponse res = DbCon.esclient.prepareSearch("cloud").setTypes("users").setQuery(
                 fuzzyQuery("name", username)
         ).execute().actionGet();
         LinkedList <User> queryres = new LinkedList<User>();
         for (SearchHit hit:res.getHits().getHits()) {
-            User user = new User();
-            user.setUid((String)hit.getSource().get("uuid"));
-            user.setName((String)hit.getSource().get("name"));
+            String uid = (String)hit.getSource().get("uid");
+            User user = find(uid);
+            if (user == null)
+                continue;
             queryres.add(user);
         }
         return queryres;
@@ -123,7 +174,10 @@ public class User {
         Document doc = new Document();
         doc.append("uid", uid).append("email", email).append("name",name)
                 .append("passwd",passwd).append("friends_list", asList(friends_list))
-                .append("topics_list", asList(topics_list));
+                .append("topics_list", asList(topics_list))
+                .append("age", age)
+                .append("sex", sex)
+                .append("address", address);
         try {
             DbCon.mongodb.getCollection(Config.UserConnection).insertOne(doc);
         }
@@ -135,7 +189,7 @@ public class User {
          */
         Map <String, String> mp = new HashMap<String, String>();
         mp.put("name", name);
-        mp.put("uuid", uid);
+        mp.put("uid", uid);
         if (!DbCon.esclient.prepareIndex("cloud", "users").setSource(new Gson().toJson(mp)).get().isCreated()) {
             System.out.println("ES create error");
         }
