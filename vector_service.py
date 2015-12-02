@@ -28,6 +28,11 @@ def normalize(vec):
 
 import json
 
+class ResponseHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("helloworld")
+        return
+
 class VectorHandler(tornado.web.RequestHandler):
     def get(self):
         global model
@@ -55,6 +60,7 @@ class VectorHandler(tornado.web.RequestHandler):
 def make_app():
     return tornado.web.Application([
         (r"/vector", VectorHandler),
+        (r"/resp", ResponseHandler),
         ])
 
 def init():
