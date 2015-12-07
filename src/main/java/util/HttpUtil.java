@@ -5,12 +5,14 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.squareup.okhttp.*;
 import config.Config;
 import db.DbCon;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,9 +29,10 @@ public class HttpUtil {
         return;
     }
     public static String checkLogin(HttpServletRequest req) {
-        /* use memcache to check */
-        String session_key = req.getParameter("session_key");
-        return (String)DbCon.memclient.get(session_key);
+        Object obj = req.getSession(true).getAttribute("uid");
+        if (obj == null)
+            return null;
+        return (String)obj;
     }
     //use mozilla to send
     private final String USER_AGENT = "Mozilla/5.0";
@@ -41,7 +44,12 @@ public class HttpUtil {
                 .asString();
         return res.getBody();
     }
+    public static void testDownload() {
+    }
+
     public static void main(String [] args) {
+        testDownload();
+        /*
         HashMap <String, Object> mp = new HashMap<String, Object>();
         mp.put("text", "I love you");
         try {
@@ -55,5 +63,6 @@ public class HttpUtil {
         catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 }

@@ -32,11 +32,31 @@ public class User {
     private String uid = "";
     private String email = "";
     private String name = "";
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    private String nickname = "";
     private String passwd = "";
     private String [] friends_list = new String[]{};
     private String [] topics_list = new String[]{};
     private int sex = 0;
     private int age = 0;
+
+    public String[] getTodo_list() {
+        return todo_list;
+    }
+
+    public void setTodo_list(String[] todo_list) {
+        this.todo_list = todo_list;
+    }
+
+    private String [] todo_list = new String []{};//relation deal list
 
     public String getAddress() {
         return address;
@@ -135,6 +155,7 @@ public class User {
             user.setAddress((String) tmp.get("address"));
             user.setAge((Integer) tmp.get("age"));
             user.setEmail((String) tmp.get("email"));
+            user.setNickname((String)tmp.get("nickname"));
             String [] tmp_arr = new String[] {};
             user.setFriends_list(((List<String>) tmp.get("friends_list")).toArray(tmp_arr));
             user.setTopics_list(((List<String>) tmp.get("topics_list")).toArray(tmp_arr));
@@ -175,8 +196,10 @@ public class User {
         doc.append("uid", uid).append("email", email).append("name",name)
                 .append("passwd",passwd).append("friends_list", asList(friends_list))
                 .append("topics_list", asList(topics_list))
+                .append("todo_list", asList(todo_list))
                 .append("age", age)
                 .append("sex", sex)
+                .append("nickname", nickname)
                 .append("address", address);
         try {
             DbCon.mongodb.getCollection(Config.UserConnection).insertOne(doc);

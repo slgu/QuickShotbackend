@@ -145,6 +145,15 @@ public class Topic {
         mp.put("like", getLike());
         return new Gson().toJson(mp);
     }
+
+    public String serilize() {
+        return new Gson().toJson(this);
+    }
+
+    public static Topic deserialize(String str) {
+        return new Gson().fromJson(str, Topic.class);
+    }
+
     public boolean insert() {
         //validate first
         if (!validate()) {
@@ -155,7 +164,7 @@ public class Topic {
         setUid(Util.uuid());
         Document doc = new Document();
         doc.append("uid", getUid()).append("title", title)
-                .append("descrption", desc)
+                .append("description", desc)
                 .append("lat", lat)
                 .append("lon", lon)
                 .append("video_uid", video_uid)

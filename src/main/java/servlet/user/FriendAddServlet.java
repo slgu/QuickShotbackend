@@ -17,6 +17,7 @@ import java.util.UUID;
 /**
  * Created by slgu1 on 11/10/15.
  */
+//deprecated
 public class FriendAddServlet extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

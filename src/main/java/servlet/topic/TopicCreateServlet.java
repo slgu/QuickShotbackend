@@ -1,9 +1,12 @@
 package servlet.topic;
+import config.Config;
+import db.DbCon;
 import db.Topic;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.bson.ByteBuf;
+import org.bson.Document;
 import org.elasticsearch.action.percolate.PercolateResponse;
 import org.elasticsearch.common.util.CancellableThreads;
 import org.elasticsearch.index.mapper.ParseContext;
@@ -33,14 +36,14 @@ import static java.nio.file.StandardOpenOption.READ;
  * Created by slgu1 on 11/7/15.
  */
 
-@WebServlet("/uploadfile")
+@WebServlet("/topic/create")
 @MultipartConfig
 public class TopicCreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        /* user session */
         String user_id = HttpUtil.checkLogin(req);
-        if (user_id== null) {
+        System.out.println(user_id);
+        if (user_id == null) {
             HttpUtil.writeResp(resp, 1);
             return;
         }
@@ -48,6 +51,10 @@ public class TopicCreateServlet extends HttpServlet {
         String desc = req.getParameter("description");
         String lat = req.getParameter("lat");
         String lon = req.getParameter("lon");
+        System.out.println(title);
+        System.out.println(desc);
+        System.out.println(lat);
+        System.out.println(lon);
         if (title == null || desc == null || lat == null || lon == null) {
             HttpUtil.writeResp(resp, 2);
             return;
@@ -74,19 +81,29 @@ public class TopicCreateServlet extends HttpServlet {
         topic.setLon(lon);
         topic.setTitle(title);
         topic.setDesc(desc);
-        topic.setVideo_uid(video_uid);
+        topic.setVideo_uid(Config.S3_VIDEO_URL + video_uid);
         topic.setUser_uid(user_id);
         //store topic
-        //return uid
         HashMap <String, String> mp = new HashMap<String, String>();
         if (topic.insert()) {
+            //store into user list
+            try {
+                DbCon.mongodb.getCollection(Config.UserConnection).findOneAndUpdate(
+                        new Document("uid", user_id),
+                        new Document("$push", new Document("topics_list", topic.getUid()))
+                );
+            }
+            catch (Exception e) {
+                HttpUtil.writeResp(resp, 7);
+                return;
+            }
+            //send to sqs for worker to process
+            AwsUtil.sendTopicToSQS(topic);
             mp.put("uid", topic.getUid());
             mp.put("status", "0");
-            return;
         }
         else {
             HttpUtil.writeResp(resp, 6);
-            return;
         }
     }
 }

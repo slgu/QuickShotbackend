@@ -38,12 +38,12 @@ public class UserLoginServlet extends HttpServlet {
         user.setName(username);
         user.setPasswd(Util.encrypt(passwd));
         if (user.checkDb()) {
-            // save session to memcache
-            String session_key = Util.uuid();
-            DbCon.memclient.add(session_key, 300, user.getUid());
             HashMap <String, Object> mp = new HashMap<String, Object>();
             mp.put("status", 0);
-            mp.put("session_key", session_key);
+            mp.put("uid", user.getUid());
+            //session store
+            req.getSession(true).setAttribute("uid", user.getUid());
+            System.out.println(req.getSession(true).getAttribute("uid"));
             resp.getWriter().write(new Gson().toJson(mp));
         }
         else {

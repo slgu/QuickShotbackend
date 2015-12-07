@@ -38,6 +38,8 @@ public class VerifyServlet extends HttpServlet{
         }
         catch (Exception e) {
             e.printStackTrace();
+            HttpUtil.writeResp(resp, 2);
+            return;
         }
         HttpUtil.writeResp(resp, 0);
     }

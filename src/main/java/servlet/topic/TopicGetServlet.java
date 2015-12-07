@@ -28,9 +28,9 @@ public class TopicGetServlet extends HttpServlet{
             HttpUtil.writeResp(resp, 2);
             return;
         }
-        HashMap <String, String> mp = new HashMap<String, String>();
+        HashMap <String, Object> mp = new HashMap<String, Object>();
         mp.put("status", "0");
-        mp.put("info", topic.toJson());
+        mp.put("info", topic);
         resp.getWriter().write(new Gson().toJson(mp));
     }
 }

@@ -1,5 +1,6 @@
 package servlet.video;
 
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import util.AwsUtil;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
+//Deprecated
 /**
  * Created by slgu1 on 11/29/15.
  */
@@ -45,12 +47,21 @@ public class VideoDownloadServlet extends HttpServlet{
             HttpUtil.writeResp(resp, 1);
             return;
         }
-        S3Object object = AwsUtil.downloadS3(uid);
-        if (object == null) {
+        S3Object object;
+        try {
+            object = AwsUtil.downloadS3(uid);
+        }
+        catch (AmazonS3Exception e) {
             HttpUtil.writeResp(resp, 2);
+            return;
+
+        }
+        if (object == null) {
+            HttpUtil.writeResp(resp, 3);
             return;
         }
         resp.setContentType(object.getObjectMetadata().getContentType());
+        System.out.println(object.getObjectMetadata().getContentType());
         resp.setContentLength((int) object.getObjectMetadata().getContentLength());
         // forces download
         String headerKey = "Content-Disposition";

@@ -36,7 +36,7 @@ public class Util {
         StringBuilder res = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < number; ++i) {
-            res.append('0' + random.nextInt(9));
+            res.append(random.nextInt(9));
         }
         return res.toString();
     }
@@ -88,6 +88,7 @@ public class Util {
     }
 
     public static void main(String[] args) {
+        //System.out.println(random(6));
         /*
         try {
             sendEmail("blackhero98@gmail.com", "142857");

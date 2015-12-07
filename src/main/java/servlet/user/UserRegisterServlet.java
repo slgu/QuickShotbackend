@@ -23,9 +23,27 @@ public class UserRegisterServlet  extends HttpServlet {
         String username = req.getParameter("username");
         String passwd = req.getParameter("passwd");
         String code = req.getParameter("verifycode");
+        String sex_str = req.getParameter("sex");
+        String age_str = req.getParameter("age");
+        String name = req.getParameter("name");
+        String address = req.getParameter("address");
         if (email == null || username == null
-                || passwd == null || code == null) {
+                || passwd == null || code == null || sex_str == null
+                || age_str == null || name == null || address == null) {
             HttpUtil.writeResp(resp, 1);
+            return;
+        }
+        int sex = 0, age = 0;
+        try {
+            sex = Integer.parseInt(sex_str);
+            age = Integer.parseInt(age_str);
+            if (sex != 0 && sex != 1) {
+                HttpUtil.writeResp(resp, 4);
+                return;
+            }
+        }
+        catch (Exception e) {
+            HttpUtil.writeResp(resp, 4);
             return;
         }
         /* check memcache verify */
@@ -42,6 +60,10 @@ public class UserRegisterServlet  extends HttpServlet {
         /* encrypt */
         user.setName(username);
         user.setPasswd(Util.encrypt(passwd));
+        user.setSex(sex);
+        user.setAge(age);
+        user.setNickname(name);
+        user.setAddress(address);
         if (!user.insert()) {
             HttpUtil.writeResp(resp, 3);
         }
