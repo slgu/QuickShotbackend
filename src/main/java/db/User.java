@@ -48,6 +48,26 @@ public class User {
     private int sex = 0;
     private int age = 0;
 
+    public int getFriendTag() {
+        return friendTag;
+    }
+
+    public void setFriendTag(int friendTag) {
+        this.friendTag = friendTag;
+    }
+
+    private int friendTag = 0;//not in database
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    private String token = "";
+
     public String[] getTodo_list() {
         return todo_list;
     }

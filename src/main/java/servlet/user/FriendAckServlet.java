@@ -1,5 +1,6 @@
 package servlet.user;
 
+import com.mongodb.client.FindIterable;
 import config.Config;
 import db.DbCon;
 import org.bson.Document;
@@ -27,6 +28,15 @@ public class FriendAckServlet extends HttpServlet {
             HttpUtil.writeResp(resp, 2);
             return;
         }
+        String key = other_uid + "_" + uid;
+        //check req exists
+        FindIterable <Document> res = DbCon.mongodb.getCollection(Config.ReqConnection).find(
+                new Document("key", key)
+        );
+        if (!res.iterator().hasNext()) {
+            HttpUtil.writeResp(resp, 3);
+            return;
+        }
         //add to friends list set
         DbCon.mongodb.getCollection(Config.UserConnection).findOneAndUpdate(
                 new Document("uid", uid),
@@ -41,9 +51,11 @@ public class FriendAckServlet extends HttpServlet {
                 new Document("uid", uid),
                 new Document("$pull", new Document("todo_list", other_uid))
         );
-        DbCon.mongodb.getCollection(Config.UserConnection).findOneAndUpdate(
-                new Document("uid", other_uid),
-                new Document("$pull", new Document("todo_list", uid))
+        //clear req
+        System.out.println(key);
+        DbCon.mongodb.getCollection(Config.ReqConnection).deleteOne(
+                new Document("key", key)
         );
+        HttpUtil.writeResp(resp, 0);
     }
 }
