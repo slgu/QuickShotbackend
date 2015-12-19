@@ -54,6 +54,9 @@ public class TopicFindServlet extends HttpServlet {
             //geo location search
             topics = Topic.geoSearch(lat_val, lon_val);
         }
-        resp.getWriter().write(new Gson().toJson(topics));
+        HashMap <String, Object> mp = new HashMap<String, Object>();
+        mp.put("status", 0);
+        mp.put("info", topics);
+        resp.getWriter().write(new Gson().toJson(mp));
     }
 }
