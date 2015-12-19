@@ -70,6 +70,7 @@ public class AwsUtil {
         }
         return key;
     }
+
     public static S3Object downloadS3(String key) {
         S3Object object =  s3.getObject(new GetObjectRequest(Config.videoBucketName, key));
         return object;

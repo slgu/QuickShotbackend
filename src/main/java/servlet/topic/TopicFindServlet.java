@@ -28,33 +28,32 @@ public class TopicFindServlet extends HttpServlet {
         String findString = req.getParameter("desc");
         String lat = req.getParameter("lat");
         String lon = req.getParameter("lon");
-        if (lat == null && findString == null) {
+        if ((lat == null || lon == null) && findString == null) {
             // no parameter selected
             HttpUtil.writeResp(resp, 2);
             return;
         }
-        if (lat == null) {
+        double lat_val;
+        double lon_val;
+
+        //parse lat lon
+        try {
+            lat_val = Double.parseDouble(lat);
+            lon_val = Double.parseDouble(lon);
+        }
+        catch (Exception e) {
+            HttpUtil.writeResp(resp, 3);
+            return;
+        }
+        List <Topic> topics = null;
+        if (lat == null || lon == null) {
             //document search
-            LinkedList <Map <String, String> > jsonres = new LinkedList<Map<String, String>>();
-            List <Topic> topics = Topic.documentSearch(findString);
-            for (Topic topic: topics) {
-                Map <String, String> mp = new HashMap<String, String>();
-                mp.put("uid", topic.getUid());
-                mp.put("title", topic.getTitle());
-                jsonres.add(mp);
-            }
+            topics = Topic.documentSearch(findString);
         }
         else {
-
+            //geo location search
+            topics = Topic.geoSearch(lat_val, lon_val);
         }
-        List<User> res = User.puzzyFind(findString);
-        LinkedList<Map<String, String> > jsonres = new LinkedList<Map<String, String>>();
-        for (User user: res) {
-            Map <String, String> mp = new HashMap<String, String>();
-            mp.put("uid", user.getUid());
-            mp.put("name", user.getName());
-            jsonres.add(mp);
-        }
-        resp.getWriter().write(new Gson().toJson(jsonres));
+        resp.getWriter().write(new Gson().toJson(topics));
     }
 }

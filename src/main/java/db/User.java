@@ -13,6 +13,7 @@ import util.Util;
 
 import javax.jws.soap.SOAPBinding;
 
+import static java.util.Arrays.binarySearch;
 import static org.elasticsearch.common.xcontent.XContentFactory.*;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -45,6 +46,16 @@ public class User {
     private String passwd = "";
     private String [] friends_list = new String[]{};
     private String [] topics_list = new String[]{};
+
+    public String[] getLikes_list() {
+        return likes_list;
+    }
+
+    public void setLikes_list(String[] likes_list) {
+        this.likes_list = likes_list;
+    }
+
+    private String [] likes_list = new String[]{};
     private int sex = 0;
     private int age = 0;
 
@@ -179,6 +190,11 @@ public class User {
             String [] tmp_arr = new String[] {};
             user.setFriends_list(((List<String>) tmp.get("friends_list")).toArray(tmp_arr));
             user.setTopics_list(((List<String>) tmp.get("topics_list")).toArray(tmp_arr));
+            //TODO spj needed to delete
+            if (tmp.get("likes_list") != null)
+                user.setLikes_list(((List<String>)tmp.get("likes_list")).toArray(tmp_arr));
+            else
+                user.setLikes_list(new String[]{});
             user.setName((String) tmp.get("name"));
             user.setUid(uid);
             return user;
@@ -215,6 +231,7 @@ public class User {
         Document doc = new Document();
         doc.append("uid", uid).append("email", email).append("name",name)
                 .append("passwd",passwd).append("friends_list", asList(friends_list))
+                .append("likes_list", asList(likes_list))
                 .append("topics_list", asList(topics_list))
                 .append("todo_list", asList(todo_list))
                 .append("age", age)

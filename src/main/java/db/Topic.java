@@ -1,11 +1,15 @@
 package db;
 
+import com.amazonaws.services.cloudsearchdomain.model.SearchRequest;
 import com.google.gson.Gson;
 import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import config.Config;
+import org.apache.lucene.queryparser.xml.FilterBuilder;
 import org.bson.Document;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.geo.GeoDistance;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.bucket.significant.SignificantTermsAggregatorFactory;
@@ -93,22 +97,47 @@ public class Topic {
     }
 
     public String getLon() {
+
         return lon;
     }
+    //doc search
     public static List <Topic> documentSearch(String desc) {
         SearchResponse res = DbCon.esclient.prepareSearch("cloud").setTypes("topics").setQuery(
-                QueryBuilders.matchQuery("desc", desc)
+                QueryBuilders.matchQuery("description", desc)
         ).execute().actionGet();
         LinkedList <Topic> queryres = new LinkedList<Topic>();
         for (SearchHit hit:res.getHits().getHits()) {
             Topic topic = new Topic();
             topic.setUid((String)hit.getSource().get("uid"));
-            topic.setDesc((String)hit.getSource().get("desc"));
+            topic.setDesc((String)hit.getSource().get("description"));
             topic.setTitle((String)hit.getSource().get("title"));
             queryres.add(topic);
         }
         return queryres;
     }
+
+    //geo search
+    public static List <Topic> geoSearch(double lat, double lon) {
+        SearchRequestBuilder srb =  DbCon.esclient.prepareSearch("cloud").setTypes("topics");
+        srb.setQuery(QueryBuilders.matchAllQuery());
+        srb.setPostFilter(QueryBuilders
+                .geoDistanceRangeQuery("filter")
+                .lat(lat).lon(lon).geoDistance(GeoDistance.valueOf("1km"))
+        );
+
+        SearchResponse res = srb.execute().actionGet();
+        LinkedList <Topic> queryres = new LinkedList<Topic>();
+
+        for (SearchHit hit:res.getHits().getHits()) {
+            Topic topic = new Topic();
+            topic.setUid((String)hit.getSource().get("uid"));
+            topic.setDesc((String)hit.getSource().get("description"));
+            topic.setTitle((String)hit.getSource().get("title"));
+            queryres.add(topic);
+        }
+        return queryres;
+    }
+
     public static Topic getByUid(String uid) {
         FindIterable <Document> iter = DbCon.mongodb.getCollection(Config.TopicConnection)
                 .find(new Document("uid", uid));
@@ -178,6 +207,7 @@ public class Topic {
             e.printStackTrace();
             return false;
         }
+
         /* insert into elastic search */
         Map <String, Object> mp = new HashMap<String, Object>();
         mp.put("uid", uid);

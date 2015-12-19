@@ -1,7 +1,11 @@
 package worker;
 
+import com.google.gson.Gson;
 import config.Config;
+import db.DbCon;
 import db.Topic;
+import org.bson.Document;
+import org.elasticsearch.common.util.CancellableThreads;
 import util.AwsUtil;
 import util.HttpUtil;
 
@@ -11,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
+import static java.util.Arrays.asList;
 
 /**
  * Created by slgu1 on 11/21/15.
@@ -45,16 +50,29 @@ public class WorkThreadPool {
                 System.out.println("deal with topic");
                 final String title = topic.getTitle();
                 final String desc = topic.getDesc();
+                String res;
                 try {
-                    HttpUtil.post(Config.VECTOR_URL, new HashMap<String, Object>() {{
+                    res = HttpUtil.post(Config.VECTOR_URL, new HashMap<String, Object>() {{
                         put("text",
                                 title + " " + desc);
                     }});
                 }
                 catch (Exception e) {
                    //maybe not needed to deal with this exception
+                    continue;
                 }
-                //TODO store in db or elastic search
+                //store in mongodb for map job
+                String key = topic.getUid();
+                double [] points = new Gson().fromJson(res, double[].class);
+                try {
+                    DbCon.mongodb.getCollection(Config.VecConnection).insertOne(
+                            new Document("key", key)
+                                    .append("val", asList(points))
+                    );
+                }
+                catch (Exception e) {
+                    //no deal
+                }
             }
         }
     }
