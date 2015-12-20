@@ -33,24 +33,23 @@ public class TopicFindServlet extends HttpServlet {
             HttpUtil.writeResp(resp, 2);
             return;
         }
-        double lat_val;
-        double lon_val;
-
-        //parse lat lon
-        try {
-            lat_val = Double.parseDouble(lat);
-            lon_val = Double.parseDouble(lon);
-        }
-        catch (Exception e) {
-            HttpUtil.writeResp(resp, 3);
-            return;
-        }
         List <Topic> topics = null;
         if (lat == null || lon == null) {
             //document search
             topics = Topic.documentSearch(findString);
         }
         else {
+            double lat_val;
+            double lon_val;
+            //parse lat lon
+            try {
+                lat_val = Double.parseDouble(lat);
+                lon_val = Double.parseDouble(lon);
+            }
+            catch (Exception e) {
+                HttpUtil.writeResp(resp, 3);
+                return;
+            }
             //geo location search
             topics = Topic.geoSearch(lat_val, lon_val);
         }
