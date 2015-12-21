@@ -6,6 +6,7 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import config.Config;
 import org.apache.lucene.queryparser.xml.FilterBuilder;
+import org.apache.lucene.queryparser.xml.builders.FilteredQueryBuilder;
 import org.bson.Document;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -16,7 +17,6 @@ import org.elasticsearch.search.aggregations.bucket.significant.SignificantTerms
 import util.Util;
 
 import java.util.*;
-
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyQuery;
 
 /**
@@ -103,7 +103,7 @@ public class Topic {
     //doc search
     public static List <Topic> documentSearch(String desc) {
         SearchResponse res = DbCon.esclient.prepareSearch("cloud").setTypes("topics").setQuery(
-                QueryBuilders.matchQuery("description", desc)
+                QueryBuilders.matchQuery("search", desc)
         ).execute().actionGet();
         LinkedList <Topic> queryres = new LinkedList<Topic>();
         for (SearchHit hit:res.getHits().getHits()) {
@@ -111,30 +111,33 @@ public class Topic {
             topic.setUid((String)hit.getSource().get("uid"));
             topic.setDesc((String)hit.getSource().get("description"));
             topic.setTitle((String)hit.getSource().get("title"));
+
             queryres.add(topic);
         }
         return queryres;
     }
 
-    //geo search
     public static List <Topic> geoSearch(double lat, double lon) {
         SearchRequestBuilder srb =  DbCon.esclient.prepareSearch("cloud").setTypes("topics");
         srb.setQuery(QueryBuilders.matchAllQuery());
         srb.setPostFilter(QueryBuilders
-                .geoDistanceRangeQuery("filter")
-                .lat(lat).lon(lon).geoDistance(GeoDistance.valueOf("1km"))
+                .geoBoundingBoxQuery("location")
+                .bottomRight(lat - 0.01, lon + 0.01)
+                .topLeft(lat + 0.01, lon - 0.01)
         );
-
         SearchResponse res = srb.execute().actionGet();
         LinkedList <Topic> queryres = new LinkedList<Topic>();
-
+        int total = Config.ES_MAX_SEARCH_NUM;
         for (SearchHit hit:res.getHits().getHits()) {
+            if ((total--) == 0)
+                break;
             Topic topic = new Topic();
             topic.setUid((String)hit.getSource().get("uid"));
             topic.setDesc((String)hit.getSource().get("description"));
             topic.setTitle((String)hit.getSource().get("title"));
             queryres.add(topic);
         }
+        System.out.println(queryres.size());
         return queryres;
     }
 
@@ -144,6 +147,7 @@ public class Topic {
         Topic topic = null;
         if (iter.iterator().hasNext()) {
             Document doc = iter.iterator().next();
+            System.out.println(doc.get("uid"));
             topic = new Topic();
             topic.setTitle((String)doc.get("title"));
             topic.setUid((String) doc.get("uid"));
@@ -218,11 +222,15 @@ public class Topic {
         mp.put("location", mpLatLon);
         mp.put("like", like);
         mp.put("title", title);
+        mp.put("search", title + " " + desc);
         if (!DbCon.esclient.prepareIndex("cloud", "topics").setSource(
                 new Gson().toJson(mp)
         ).get().isCreated()) {
             System.out.println("ES create error");
         }
         return true;
+    }
+    public static void main(String [] args) {
+        geoSearch(40.79965, -73.96374);
     }
 }

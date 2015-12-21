@@ -23,13 +23,13 @@ import java.util.*;
  */
 //recommend topics to users
 public class TopicRecommendServlet extends HttpServlet{
-    protected LinkedList <String> mapQuery(ArrayList <Double> vec, int topNum) {
+    protected LinkedList <String> mapQuery(String uid, ArrayList <Double> vec, int topNum) {
         String map ="function () {"+
                 "var another = " + vec.toString() +";"+
                 "var res = 0;" +
                 "var idx = 0;" +
                 "for(idx = 0; idx < this.val.length; ++idx) {" +
-                "res += (this.val[idx] - another[idx]) * (this.val[idx] - another[idx]);" +
+                "res += this.val[idx] * another[idx];" +
                 "}" +
                 "res = Math.sqrt(res);" +
                 "emit(-res, this.key);"+
@@ -44,8 +44,21 @@ public class TopicRecommendServlet extends HttpServlet{
         LinkedList <String> ret = new LinkedList<String>();
         while (itr.hasNext() && ((topNum--) != 0)) {
             //insert into priority queue
-            List <String> result = (List <String>)itr.next().get("value");
-            ret.addAll(result);
+            Document doc = itr.next();
+            String tid = (String)doc.get("value");
+            //continue if in user likelist
+            FindIterable <Document> checkRes = DbCon.mongodb.getCollection(Config.UserConnection).find(
+                    new Document("uid", uid)
+                            .append("likes_list", new Document("$elemMatch", new Document(
+                                    "$eq", tid
+                            )))
+            );
+            //continue if in user likelist
+            if (checkRes.iterator().hasNext()) {
+                ++topNum;
+                continue;
+            }
+            ret.add(tid);
         }
         return ret;
     }
@@ -82,7 +95,7 @@ public class TopicRecommendServlet extends HttpServlet{
         //norm
         VecUtil.norm(arr);
         LinkedList <Topic> topics = new LinkedList<Topic>();
-        for (String tid: mapQuery(arr, 10)) {
+        for (String tid: mapQuery(uid, arr, 10)) {
             Topic topic = Topic.getByUid(tid);
             if (topic == null)
                 continue;

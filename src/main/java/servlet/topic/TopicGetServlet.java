@@ -29,7 +29,7 @@ public class TopicGetServlet extends HttpServlet{
             return;
         }
         HashMap <String, Object> mp = new HashMap<String, Object>();
-        mp.put("status", "0");
+        mp.put("status", 0);
         mp.put("info", topic);
         resp.getWriter().write(new Gson().toJson(mp));
     }

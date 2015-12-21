@@ -1,0 +1,11 @@
+use cloud
+db.users.createIndex({"email":1},{"unique":true})
+db.users.createIndex({"users":1},{"unique":true})
+db.reqs.createIndex({"key":1}, {"unique":true})
+db.users.update({"uid":"d32c6db1-e64b-49a6-8a3f-c292e004976e"}, {"likes_list":["ffd72e0f-5fa8-48c6-90b2-1c32c46b768c", "b5e2e271-991f-4509-8293-b9ae02fe3fee"]})
+//es setup
+curl -XPUT 'http://45.79.147.213:9200/cloud' -d '{ "mappings": { "topics": { "properties": { "name": { "type": "string" }, "location": { "type": "geo_point", "lat_lon": true } } } } }'
+ mvn install:install-file -Dfile=lib/AmazonElastiCacheClusterClient-1.0.jar  -DgroupId=org.amazon -Dversion=1.0 -DartifactId=elasticcache -Dpackaging=jar
+add SNS SQS
+db.users.update({"uid":"d32c6db1-e64b-49a6-8a3f-c292e004976e"}, {"$set":{"likes_list":["ffd72e0f-5fa8-48c6-90b2-1c32c46b768c", "b5e2e271-991f-4509-8293-b9ae02fe3fee"]}}, {})
+//recommend algorithm

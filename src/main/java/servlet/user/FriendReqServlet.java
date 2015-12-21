@@ -59,6 +59,7 @@ public class FriendReqServlet extends HttpServlet {
                 new Document("uid", other_uid),
                 new Document("$addToSet", new Document("todo_list", uid))
         );
+        //TODO add to sns
         HttpUtil.writeResp(resp, 0);
         return;
     }

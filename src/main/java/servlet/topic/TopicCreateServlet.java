@@ -1,4 +1,5 @@
 package servlet.topic;
+import com.google.gson.Gson;
 import config.Config;
 import db.DbCon;
 import db.Topic;
@@ -84,7 +85,8 @@ public class TopicCreateServlet extends HttpServlet {
         topic.setVideo_uid(Config.S3_VIDEO_URL + video_uid);
         topic.setUser_uid(user_id);
         //store topic
-        HashMap <String, String> mp = new HashMap<String, String>();
+        HashMap <String, Object> mp = new HashMap<String, Object>();
+        //Transaction needed
         if (topic.insert()) {
             //store into user list
             try {
@@ -100,7 +102,8 @@ public class TopicCreateServlet extends HttpServlet {
             //send to sqs for worker to process
             AwsUtil.sendTopicToSQS(topic);
             mp.put("uid", topic.getUid());
-            mp.put("status", "0");
+            mp.put("status", 0);
+            resp.getWriter().write(new Gson().toJson(mp));
         }
         else {
             HttpUtil.writeResp(resp, 6);

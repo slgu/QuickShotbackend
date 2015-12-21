@@ -58,12 +58,19 @@ public class WorkThreadPool {
                     }});
                 }
                 catch (Exception e) {
+                    e.printStackTrace();
                    //maybe not needed to deal with this exception
                     continue;
                 }
                 //store in mongodb for map job
                 String key = topic.getUid();
-                double [] points = new Gson().fromJson(res, double[].class);
+                Object [] points = new Gson().fromJson(res, Object[].class);
+                System.out.println(key);
+                for (int i = 0; i < points.length; ++i) {
+                    System.out.print(points[i]);
+                    System.out.print(' ');
+                }
+                System.out.println("");
                 try {
                     DbCon.mongodb.getCollection(Config.VecConnection).insertOne(
                             new Document("key", key)
@@ -71,6 +78,7 @@ public class WorkThreadPool {
                     );
                 }
                 catch (Exception e) {
+                    e.printStackTrace();
                     //no deal
                 }
             }

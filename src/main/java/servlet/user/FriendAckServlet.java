@@ -38,6 +38,7 @@ public class FriendAckServlet extends HttpServlet {
             return;
         }
         //add to friends list set
+        //TODO Transaction needed
         DbCon.mongodb.getCollection(Config.UserConnection).findOneAndUpdate(
                 new Document("uid", uid),
                 new Document("$addToSet", new Document("friends_list", other_uid))
