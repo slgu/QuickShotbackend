@@ -8,6 +8,7 @@ import db.DbCon;
 import db.Topic;
 import db.User;
 import org.bson.Document;
+import org.elasticsearch.common.Strings;
 import util.HttpUtil;
 import util.VecUtil;
 
@@ -35,30 +36,39 @@ public class TopicRecommendServlet extends HttpServlet{
                 "emit(-res, this.key);"+
                 "}";
         String reduce = "function(key, values) {return values.toString();}";
-        System.out.println(map);
-        System.out.println(reduce);
         MapReduceIterable<Document> res = DbCon.mongodb.getCollection(Config.VecConnection).mapReduce(map,
                 reduce);
         Iterator<Document> itr = res.iterator();
         //top 10 return
         LinkedList <String> ret = new LinkedList<String>();
-        while (itr.hasNext() && ((topNum--) != 0)) {
-            //insert into priority queue
+        while (itr.hasNext()) {
             Document doc = itr.next();
-            String tid = (String)doc.get("value");
-            //continue if in user likelist
-            FindIterable <Document> checkRes = DbCon.mongodb.getCollection(Config.UserConnection).find(
-                    new Document("uid", uid)
-                            .append("likes_list", new Document("$elemMatch", new Document(
-                                    "$eq", tid
-                            )))
-            );
-            //continue if in user likelist
-            if (checkRes.iterator().hasNext()) {
-                ++topNum;
-                continue;
+            String [] tid_list = ((String)doc.get("value")).split(",");
+
+            //spj
+            if (tid_list == null) {
+                tid_list = new String[]{(String)doc.get("value")};
             }
-            ret.add(tid);
+
+            for (String tid: tid_list) {
+                //continue if in user likelist
+                FindIterable <Document> checkRes = DbCon.mongodb.getCollection(Config.UserConnection).find(
+                        new Document("uid", uid)
+                                .append("likes_list", new Document("$elemMatch", new Document(
+                                        "$eq", tid
+                                )))
+                );
+                //continue if in user likelist
+                if (checkRes.iterator().hasNext()) {
+                    continue;
+                }
+                --topNum;
+                if (topNum == 0)
+                    break;
+                ret.add(tid);
+            }
+            if (topNum == 0)
+                break;
         }
         return ret;
     }
@@ -95,7 +105,7 @@ public class TopicRecommendServlet extends HttpServlet{
         //norm
         VecUtil.norm(arr);
         LinkedList <Topic> topics = new LinkedList<Topic>();
-        for (String tid: mapQuery(uid, arr, 10)) {
+        for (String tid: mapQuery(uid, arr, 5)) {
             Topic topic = Topic.getByUid(tid);
             if (topic == null)
                 continue;
@@ -106,5 +116,12 @@ public class TopicRecommendServlet extends HttpServlet{
         mp.put("status", 0);
         mp.put("info", topics);
         resp.getWriter().write(new Gson().toJson(mp));
+    }
+
+    public static void main(String [] args) {
+        String tmp = "9fc59fc7-51b2-4fb0-9999-524736609707";
+        for (String item : tmp.split(",")) {
+            System.out.println(item);
+        }
     }
 }
