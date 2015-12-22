@@ -1,4 +1,5 @@
 package servlet.topic;
+import com.amazonaws.services.autoscaling.model.transform.ScheduledUpdateGroupActionStaxUnmarshaller;
 import com.google.gson.Gson;
 import config.Config;
 import db.DbCon;
@@ -70,9 +71,21 @@ public class TopicCreateServlet extends HttpServlet {
             return;
         }
         InputStream fileContent = filePart.getInputStream();
+
+        Part imgPart = req.getPart("image");
+        System.out.println(imgPart.getContentType());
+        if (!imgPart.getContentType().equals("image/png")) {
+            HttpUtil.writeResp(resp, 4);
+            return;
+        }
+
         /* get video and store */
-        //store video in gridfs and return an uid
-        String video_uid = AwsUtil.uploadS3(filePart);
+        //store video in s3 and return an uid
+        String video_uid = AwsUtil.uploadS3(filePart, "mp4");
+
+        //store picture in s3 and return an uid
+        String img_uid = AwsUtil.uploadS3(imgPart, "png");
+
         if (video_uid == null) {
             HttpUtil.writeResp(resp, 5);
             return;
@@ -82,12 +95,14 @@ public class TopicCreateServlet extends HttpServlet {
         topic.setLon(lon);
         topic.setTitle(title);
         topic.setDesc(desc);
-        topic.setVideo_uid(Config.S3_VIDEO_URL + video_uid);
+        topic.setImg_uid(Config.S3_URL + img_uid);
+        topic.setVideo_uid(Config.S3_URL + video_uid);
         topic.setUser_uid(user_id);
         //store topic
         HashMap <String, Object> mp = new HashMap<String, Object>();
         //Transaction needed
         if (topic.insert()) {
+            System.out.println("insert topic done");
             //store into user list
             try {
                 DbCon.mongodb.getCollection(Config.UserConnection).findOneAndUpdate(
