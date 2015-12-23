@@ -31,15 +31,16 @@ public class UserLikeServlet extends HttpServlet{
             HttpUtil.writeResp(resp, 2);
             return;
         }
-        LinkedList <Map <String, String> > list = new LinkedList<Map <String, String>>();
+        LinkedList <Topic> list = new LinkedList<Topic>();
         for (String tid: user.getLikes_list()) {
             Topic topic = Topic.getByUid(tid);
-            Map <String, String> mp = new HashMap<String, String>();
-            mp.put("uid", topic.getUid());
-            mp.put("title", topic.getTitle());
-            mp.put("desc", topic.getDesc());
-            list.add(mp);
+            //TODO spj
+            topic.setImg_uid("http://s3.amazonaws.com/slgucloud/object-d7f3a48d-ab70-495c-92ae-d03f229bc9a8.png");
+            list.add(topic);
         }
-        resp.getWriter().write(new Gson().toJson(list));
+        HashMap <String, Object> mp = new HashMap<String, Object>();
+        mp.put("status", 0);
+        mp.put("info", list);
+        resp.getWriter().write(new Gson().toJson(mp));
     }
 }

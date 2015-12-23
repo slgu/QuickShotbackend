@@ -2,6 +2,7 @@ package servlet.user;
 
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
 import config.Config;
 import db.DbCon;
 import db.User;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,19 +31,16 @@ public class UserNotifyServlet extends HttpServlet{
             HttpUtil.writeResp(resp, 1);
             return;
         }
-        FindIterable <Document> res = DbCon.mongodb.getCollection(Config.UserConnection).find(
-                new Document("uid", uid)
+        Document doc = DbCon.mongodb.getCollection(Config.NotifyConnection).findOneAndUpdate(
+                new Document("uid", uid),
+                new Document("$setOnInsert", new Document("notify_list", new ArrayList<Object>())),
+                new FindOneAndUpdateOptions().upsert(true)
         );
-        if (!res.iterator().hasNext()) {
-            HttpUtil.writeResp(resp, 2);
-            return;
-        }
-        Document doc = res.iterator().next();
-        String [] todo_list = new String[]{};
-        todo_list = ((List <String>)doc.get("todo_list")).toArray(todo_list);
+        String [] notify_list = new String[]{};
+        notify_list = ((List <String>)doc.get("notify_list")).toArray(notify_list);
         List <User> list = new LinkedList<User>();
-        for (String todo: todo_list) {
-            User user = User.find(todo);
+        for (String notify: notify_list) {
+            User user = User.find(notify);
             if (user == null)
                 continue;
             list.add(user);

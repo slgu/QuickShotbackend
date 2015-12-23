@@ -36,11 +36,12 @@ public class AwsUtil {
         sqs.setRegion(Region.getRegion(Regions.US_WEST_2));
     }
     /*return store key*/
-    private static String makeName(String uid) {
-        return "object-" + uid + ".mp4";
+    private static String makeName(String uid, String suffix)
+    {
+        return "object-" + uid + "." + suffix;
     }
-    public static String uploadS3(Part filePart) {
-        String key = makeName(Util.uuid());
+    public static String uploadS3(Part filePart, String suffix) {
+        String key = makeName(Util.uuid(), suffix);
         try {
             ObjectMetadata omd = new ObjectMetadata();
             omd.setContentType(filePart.getContentType());

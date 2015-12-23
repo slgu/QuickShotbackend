@@ -31,6 +31,25 @@ public class Topic {
     private String lat = "";
     private String lon = "";
 
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    private Date createAt = new Date();
+    public String getImg_uid() {
+        return img_uid;
+    }
+
+    public void setImg_uid(String img_uid) {
+        this.img_uid = img_uid;
+    }
+
+    private String img_uid = "";
+
     public ArrayList <String> getComment_list() {
         return comment_list;
     }
@@ -97,7 +116,6 @@ public class Topic {
     }
 
     public String getLon() {
-
         return lon;
     }
     //doc search
@@ -156,6 +174,9 @@ public class Topic {
             topic.setLat((String) doc.get("lat"));
             topic.setLike((Integer) doc.get("like"));
             topic.setVideo_uid((String) doc.get("video_uid"));
+            topic.setImg_uid((String) doc.get("img_uid"));
+            topic.setCreateAt((Date) doc.get("createAt"));
+            System.out.println(topic.getCreateAt());
             topic.setComment_list((ArrayList <String>)doc.get("comment_list"));
         }
         return topic;
@@ -174,6 +195,8 @@ public class Topic {
         mp.put("lat", getLat());
         mp.put("lon", getLon());
         mp.put("video_uid", getVideo_uid());
+        mp.put("img_uid", getImg_uid());
+        mp.put("createAt", getCreateAt());
         mp.put("comment_list", getComment_list());
         mp.put("like", getLike());
         return new Gson().toJson(mp);
@@ -193,6 +216,7 @@ public class Topic {
             System.out.println("nima");
             return false;
         }
+        createAt = new Date();
         setLike(0);
         setUid(Util.uuid());
         Document doc = new Document();
@@ -201,7 +225,9 @@ public class Topic {
                 .append("lat", lat)
                 .append("lon", lon)
                 .append("video_uid", video_uid)
+                .append("img_uid", img_uid)
                 .append("like", like)
+                .append("createAt", createAt)
                 .append("comment_list", comment_list);
         try {
             DbCon.mongodb.getCollection(Config.TopicConnection)

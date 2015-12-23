@@ -1,6 +1,7 @@
 package servlet.user;
 
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
 import config.Config;
 import db.DbCon;
 import org.bson.Document;
@@ -43,21 +44,26 @@ public class FriendReqServlet extends HttpServlet {
             HttpUtil.writeResp(resp, 3);
             return;
         }
+
         //add into request db
         String key = uid + "_" + other_uid;
         try {
             DbCon.mongodb.getCollection(Config.ReqConnection).insertOne(
-                new Document("key", key).append("val", 1)
+                new Document("key", key).append("from", uid)
+                    .append("to", other_uid)
             );
         }
         catch (Exception e) {
             HttpUtil.writeResp(resp, 4);
             return;
         }
-        //add into todo_list
-        DbCon.mongodb.getCollection(Config.UserConnection).findOneAndUpdate(
+
+        //add to notify_list upsert
+        DbCon.mongodb.getCollection(Config.NotifyConnection)
+        .findOneAndUpdate(
                 new Document("uid", other_uid),
-                new Document("$addToSet", new Document("todo_list", uid))
+                new Document("$addToSet", new Document("nofity_list", uid)),
+                new FindOneAndUpdateOptions().upsert(true)
         );
         //TODO add to sns
         HttpUtil.writeResp(resp, 0);

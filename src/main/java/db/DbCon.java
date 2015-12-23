@@ -43,7 +43,7 @@ public class DbCon {
             mongodb = mongoclient.getDatabase(Config.MongoDb);
             memclient = new MemcachedClient(AddrUtil.getAddresses(Config.MemCacheEP));
             esclient = TransportClient.builder().build()
-                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(Config.EsIp), 9300));
+                            .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(Config.EsIp), Config.EsPort));
             gfsPhoto = new GridFS(mongoclient.getDB(Config.MongoDb));
         } catch (UnknownHostException e) {
             e.printStackTrace();

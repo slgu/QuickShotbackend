@@ -18,6 +18,10 @@ import java.util.HashMap;
 public class UserGetServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (HttpUtil.checkLogin(req) == null) {
+            HttpUtil.writeResp(resp, 1);
+            return;
+        }
         String uid = req.getParameter("uid");
         HashMap <String, Object> mp = new HashMap<String, Object>();
         if (uid == null) {
@@ -29,23 +33,8 @@ public class UserGetServlet extends HttpServlet {
             HttpUtil.writeResp(resp, 2);
             return;
         }
-        mp.put("status", 0);
-        mp.put("info", user);
-        resp.getWriter().write(new Gson().toJson(mp));
-    }
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String uid = req.getParameter("uid");
-        HashMap <String, Object> mp = new HashMap<String, Object>();
-        if (uid == null) {
-            HttpUtil.writeResp(resp, 1);
-            return;
-        }
-        User user = User.find(uid);
-        if (user == null) {
-            HttpUtil.writeResp(resp, 2);
-            return;
-        }
+        //TODO spj
+        user.setImg_uid("http://s3.amazonaws.com/slgucloud/object-d7f3a48d-ab70-495c-92ae-d03f229bc9a8.png");
         mp.put("status", 0);
         mp.put("info", user);
         resp.getWriter().write(new Gson().toJson(mp));

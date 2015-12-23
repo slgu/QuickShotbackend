@@ -28,6 +28,8 @@ public class TopicFindServlet extends HttpServlet {
         String findString = req.getParameter("desc");
         String lat = req.getParameter("lat");
         String lon = req.getParameter("lon");
+        System.out.println(lat);
+        System.out.println(lon);
         if ((lat == null || lon == null) && findString == null) {
             // no parameter selected
             HttpUtil.writeResp(resp, 2);

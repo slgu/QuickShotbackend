@@ -3,6 +3,7 @@ package servlet.user;
 import com.mongodb.client.FindIterable;
 import config.Config;
 import db.DbCon;
+import db.Topic;
 import org.bson.Document;
 import util.HttpUtil;
 
@@ -28,6 +29,12 @@ public class UserAddLikeServlet extends HttpServlet{
             HttpUtil.writeResp(resp, 2);
             return;
         }
+        // check tid not in db
+        if (Topic.getByUid(tid) == null) {
+            HttpUtil.writeResp(resp, 3);
+            return;
+        }
+
         //TODO transaction needed
         try {
             FindIterable <Document> res = DbCon.mongodb.getCollection(Config.UserConnection).find(

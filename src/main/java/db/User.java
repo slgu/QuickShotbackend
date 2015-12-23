@@ -47,6 +47,16 @@ public class User {
     private String [] friends_list = new String[]{};
     private String [] topics_list = new String[]{};
 
+    public String getImg_uid() {
+        return img_uid;
+    }
+
+    public void setImg_uid(String img_uid) {
+        this.img_uid = img_uid;
+    }
+
+    private String img_uid = "";
+
     public String[] getLikes_list() {
         return likes_list;
     }
@@ -187,6 +197,7 @@ public class User {
             user.setAge((Integer) tmp.get("age"));
             user.setEmail((String) tmp.get("email"));
             user.setNickname((String)tmp.get("nickname"));
+            user.setImg_uid((String)tmp.get("img_uid"));
             String [] tmp_arr = new String[] {};
             user.setFriends_list(((List<String>) tmp.get("friends_list")).toArray(tmp_arr));
             user.setTopics_list(((List<String>) tmp.get("topics_list")).toArray(tmp_arr));
@@ -237,6 +248,7 @@ public class User {
                 .append("age", age)
                 .append("sex", sex)
                 .append("nickname", nickname)
+                .append("img_uid", img_uid)
                 .append("address", address);
         try {
             DbCon.mongodb.getCollection(Config.UserConnection).insertOne(doc);
