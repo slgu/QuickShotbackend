@@ -36,8 +36,10 @@ public class UserNotifyServlet extends HttpServlet{
                 new Document("$setOnInsert", new Document("notify_list", new ArrayList<Object>())),
                 new FindOneAndUpdateOptions().upsert(true)
         );
+        System.out.println(uid);
         String [] notify_list = new String[]{};
         notify_list = ((List <String>)doc.get("notify_list")).toArray(notify_list);
+        System.out.println(notify_list.length);
         List <User> list = new LinkedList<User>();
         for (String notify: notify_list) {
             User user = User.find(notify);

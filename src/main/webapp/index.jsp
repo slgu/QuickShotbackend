@@ -1,5 +1,5 @@
-<form action="upload" method="post" enctype="multipart/form-data">
-    <input type="text" name="description" />
-    <input type="file" name="file" />
+<form action="/user/login" method="post">
+    <input type="text" name="username" />
+    <input type="text" name="passwd" />
     <input type="submit" />
 </form>

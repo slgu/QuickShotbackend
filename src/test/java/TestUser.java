@@ -19,6 +19,7 @@ public class TestUser {
         user.setSex((Integer) mp.get("sex"));
         user.setName((String) mp.get("name"));
         user.setPasswd((String)mp.get("passwd"));
+        user.setNickname((String)mp.get("nickname"));
         System.out.println(user.insert());
     }
 
@@ -44,33 +45,36 @@ public class TestUser {
     }
 
     public static void main(String [] args) {
-        addFriends("033ac322-2028-45e6-8f70-96960f4645d4", "48705893-608a-4765-8cec-0a610311c3ad");
-        System.out.println("done");
+        //addFriends("033ac322-2028-45e6-8f70-96960f4645d4", "48705893-608a-4765-8cec-0a610311c3ad");
+        addUser(new HashMap<String, Object>(){{
+            put("address", "columbia university");
+            put("age", 22);
+            put("email", "kobe3@gmail.com");
+            put("sex", 0);
+            put("passwd", Util.encrypt("123"));
+            put("name", "kobe3");
+            put("nickname", "blackman8");
+        }});
         /*
         addUser(new HashMap<String, Object>(){{
             put("address", "columbia university");
             put("age", 22);
-            put("email", "kanghu@gmail.com");
+            put("email", "nash1@gmail.com");
             put("sex", 0);
             put("passwd", Util.encrypt("123"));
-            put("name", "kanghu");
+            put("name", "nash1");
+            put("nickname", "son of phoenix");
         }});
         addUser(new HashMap<String, Object>(){{
             put("address", "columbia university");
             put("age", 22);
-            put("email", "kanzhj@gmail.com");
+            put("email", "messi1@gmail.com");
             put("sex", 0);
             put("passwd", Util.encrypt("123"));
-            put("name", "kanzhj");
+            put("name", "messi");
+            put("nickname", "messi1");
         }});
-        addUser(new HashMap<String, Object>(){{
-            put("address", "columbia university");
-            put("age", 22);
-            put("email", "blackhero98@gmail.com");
-            put("sex", 0);
-            put("passwd", Util.encrypt("123"));
-            put("name", "shenlonggu");
-        }});
+        System.out.println("done");
         addUser(new HashMap<String, Object>(){{
             put("address", "columbia university");
             put("age", 22);

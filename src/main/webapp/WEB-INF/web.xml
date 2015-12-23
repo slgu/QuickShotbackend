@@ -33,7 +33,10 @@
         <servlet-name>userfind</servlet-name>
         <servlet-class>servlet.user.UserFindServlet</servlet-class>
     </servlet>
-
+    <servlet-mapping>
+        <servlet-name>userfind</servlet-name>
+        <url-pattern>/user/find</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>userget</servlet-name>
         <url-pattern>/user/get</url-pattern>
@@ -43,9 +46,21 @@
         <servlet-class>servlet.user.UserGetServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>userfind</servlet-name>
-        <url-pattern>/user/find</url-pattern>
+        <servlet-name>useradd</servlet-name>
+        <url-pattern>/user/add</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>useradd</servlet-name>
+        <servlet-class>servlet.user.FriendReqServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>userack</servlet-name>
+        <url-pattern>/user/ack</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>userack</servlet-name>
+        <servlet-class>servlet.user.FriendAckServlet</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>stream</servlet-name>
         <servlet-class>servlet.video.VideoShowServlet</servlet-class>
@@ -61,5 +76,79 @@
     <servlet-mapping>
         <servlet-name>download</servlet-name>
         <url-pattern>/video/download</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>topicget</servlet-name>
+        <servlet-class>servlet.topic.TopicGetServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>topicget</servlet-name>
+        <url-pattern>/topic/get</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>topicfind</servlet-name>
+        <servlet-class>servlet.topic.TopicFindServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>topicfind</servlet-name>
+        <url-pattern>/topic/find</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>usernotify</servlet-name>
+        <servlet-class>servlet.user.UserNotifyServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>usernotify</servlet-name>
+        <url-pattern>/user/notify</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>userlike</servlet-name>
+        <servlet-class>servlet.user.UserLikeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>userlike</servlet-name>
+        <url-pattern>/user/like</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>useraddlike</servlet-name>
+        <servlet-class>servlet.user.UserAddLikeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>useraddlike</servlet-name>
+        <url-pattern>/user/addlike</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>topiccomment</servlet-name>
+        <servlet-class>servlet.topic.TopicCommentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>topiccomment</servlet-name>
+        <url-pattern>/topic/comment</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>userlogout</servlet-name>
+        <servlet-class>servlet.user.UserLogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>userlogout</servlet-name>
+        <url-pattern>/user/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>topicrecommend</servlet-name>
+        <servlet-class>servlet.topic.TopicRecommendServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>topicrecommend</servlet-name>
+        <url-pattern>/topic/recommend</url-pattern>
     </servlet-mapping>
 </web-app>

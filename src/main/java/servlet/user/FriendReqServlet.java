@@ -62,7 +62,7 @@ public class FriendReqServlet extends HttpServlet {
         DbCon.mongodb.getCollection(Config.NotifyConnection)
         .findOneAndUpdate(
                 new Document("uid", other_uid),
-                new Document("$addToSet", new Document("nofity_list", uid)),
+                new Document("$addToSet", new Document("notify_list", uid)),
                 new FindOneAndUpdateOptions().upsert(true)
         );
         //TODO add to sns

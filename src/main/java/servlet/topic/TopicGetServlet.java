@@ -23,6 +23,8 @@ public class TopicGetServlet extends HttpServlet{
             return;
         }
         String topic_uid = req.getParameter("uid");
+        System.out.println("debug");
+        System.out.println(topic_uid);
         Topic topic = Topic.getByUid(topic_uid);
         if (topic ==  null) {
             HttpUtil.writeResp(resp, 2);
