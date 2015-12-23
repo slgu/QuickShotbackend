@@ -33,8 +33,6 @@ public class UserGetServlet extends HttpServlet {
             HttpUtil.writeResp(resp, 2);
             return;
         }
-        //TODO spj
-        user.setImg_uid("http://s3.amazonaws.com/slgucloud/object-d7f3a48d-ab70-495c-92ae-d03f229bc9a8.png");
         mp.put("status", 0);
         mp.put("info", user);
         resp.getWriter().write(new Gson().toJson(mp));

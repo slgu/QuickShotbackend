@@ -33,6 +33,11 @@ public class FriendReqServlet extends HttpServlet {
             HttpUtil.writeResp(resp, 2);
             return;
         }
+        /* return if uid == other_uid */
+        if (uid == other_uid) {
+            HttpUtil.writeResp(resp, 5);
+            return;
+        }
         /*check this user not your friends*/
         FindIterable <Document> res = DbCon.mongodb.getCollection(Config.UserConnection).find(
                 new Document("uid", uid)

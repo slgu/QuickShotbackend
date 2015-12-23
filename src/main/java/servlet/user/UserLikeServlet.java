@@ -34,8 +34,6 @@ public class UserLikeServlet extends HttpServlet{
         LinkedList <Topic> list = new LinkedList<Topic>();
         for (String tid: user.getLikes_list()) {
             Topic topic = Topic.getByUid(tid);
-            //TODO spj
-            topic.setImg_uid("http://s3.amazonaws.com/slgucloud/object-d7f3a48d-ab70-495c-92ae-d03f229bc9a8.png");
             list.add(topic);
         }
         HashMap <String, Object> mp = new HashMap<String, Object>();

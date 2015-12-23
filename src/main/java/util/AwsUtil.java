@@ -19,7 +19,9 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 import config.Config;
 import db.Topic;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -47,11 +49,46 @@ public class AwsUtil {
             omd.setContentType(filePart.getContentType());
             omd.setContentLength(filePart.getSize());
             omd.setHeader("filename", filePart.getName());
-            s3.putObject(new PutObjectRequest(Config.videoBucketName, key , filePart.getInputStream(), omd));
+            if (suffix.equals("mp4"))
+                s3.putObject(new PutObjectRequest(Config.videoBucketName, key , filePart.getInputStream(), omd));
+            else if (suffix.equals("png"))
+                s3.putObject(new PutObjectRequest(Config.imgBucketName, key , filePart.getInputStream(), omd));
         }
         catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+        catch (AmazonServiceException ase) {
+            System.out.println("Caught an AmazonServiceException, which means your request made it "
+                    + "to Amazon S3, but was rejected with an error response for some reason.");
+            System.out.println("Error Message:    " + ase.getMessage());
+            System.out.println("HTTP Status Code: " + ase.getStatusCode());
+            System.out.println("AWS Error Code:   " + ase.getErrorCode());
+            System.out.println("Error Type:       " + ase.getErrorType());
+            System.out.println("Request ID:       " + ase.getRequestId());
+            return null;
+        } catch (AmazonClientException ace) {
+            System.out.println("Caught an AmazonClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with S3, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message: " + ace.getMessage());
+            return null;
+        }
+        return key;
+    }
+
+    public static String uploadS3(File file, String suffix, InputStream io) {
+        String key = makeName(Util.uuid(), suffix);
+        MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
+        try {
+            ObjectMetadata omd = new ObjectMetadata();
+            omd.setContentType(mimeTypesMap.getContentType(file));
+            omd.setContentLength(file.length());
+            omd.setHeader("filename", file.getName());
+            if (suffix.equals("mp4"))
+                s3.putObject(new PutObjectRequest(Config.videoBucketName, key , io, omd));
+            else if (suffix.equals("png"))
+                s3.putObject(new PutObjectRequest(Config.imgBucketName, key , io, omd));
         }
         catch (AmazonServiceException ase) {
             System.out.println("Caught an AmazonServiceException, which means your request made it "

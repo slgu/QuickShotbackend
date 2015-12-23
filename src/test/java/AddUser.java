@@ -101,7 +101,7 @@ public class AddUser {
                     mp.put("passwd", Util.encrypt("123"));
                     mp.put("address", "Columbia University");
                     mp.put("email", emails[i]);
-                    mp.put("img_uid", Config.S3_URL + key);
+                    mp.put("img_uid", Config.S3_IMG_URL + key);
                     System.out.println(addUser(mp));
                     ++i;
                 }

@@ -63,9 +63,9 @@ public class TopicRecommendServlet extends HttpServlet{
                     continue;
                 }
                 --topNum;
+                ret.add(tid);
                 if (topNum == 0)
                     break;
-                ret.add(tid);
             }
             if (topNum == 0)
                 break;
@@ -105,7 +105,7 @@ public class TopicRecommendServlet extends HttpServlet{
         //norm
         VecUtil.norm(arr);
         LinkedList <Topic> topics = new LinkedList<Topic>();
-        for (String tid: mapQuery(uid, arr, 5)) {
+        for (String tid: mapQuery(uid, arr, 2)) {
             Topic topic = Topic.getByUid(tid);
             if (topic == null)
                 continue;

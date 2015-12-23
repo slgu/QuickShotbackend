@@ -14,11 +14,11 @@ import java.util.Random;
 public class AddTopic {
     public static String [] user_uids =
             new String [] {
-                    "44a97d9e-c1f7-4613-8da9-2d7ac560d072",
-                    "6c90bbd5-cf0f-4626-bcf4-7793ed120c51",
-                    "5d936112-9f90-4eb4-a27d-3b43513ea2b0",
-                    "09a3e62c-f6c3-43f9-a3e1-f854dc49cd1f",
-                    "d0a8676f-ee05-49be-b646-2066e0f74700"
+                    "69c6e1c2-50d8-4742-b9a3-4e599dc14ae2",
+                    "1841fcbc-74f0-4cdc-9707-babdce4cecf2",
+                    "6be21a3b-a54b-4fde-b4cd-c76f03468c30",
+                    "d371a70f-d631-4b4c-8a60-bbcf7d7974b8",
+                    "dff3ae73-a45e-4c74-9d8e-7d4a74d822e8"
             };
     private static double lat_min = 40.785840;
     private static double lat_max = 40.803548;
@@ -82,7 +82,7 @@ public class AddTopic {
                     e.printStackTrace();
                     continue;
                 }
-                System.out.println(addTopic(user_uids[i % 5], title_desc[0].trim(), title_desc[1].trim(), Config.S3_URL + video_uid, Config.S3_URL + img_uid));
+                System.out.println(addTopic(user_uids[i % 5], title_desc[0].trim(), title_desc[1].trim(), Config.S3_VIDEO_URL + video_uid, Config.S3_IMG_URL + img_uid));
                 ++i;
             }
         }

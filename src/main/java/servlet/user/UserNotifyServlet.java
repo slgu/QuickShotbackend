@@ -31,12 +31,20 @@ public class UserNotifyServlet extends HttpServlet{
             HttpUtil.writeResp(resp, 1);
             return;
         }
-        Document doc = DbCon.mongodb.getCollection(Config.NotifyConnection).findOneAndUpdate(
+        DbCon.mongodb.getCollection(Config.NotifyConnection).findOneAndUpdate(
                 new Document("uid", uid),
                 new Document("$setOnInsert", new Document("notify_list", new ArrayList<Object>())),
                 new FindOneAndUpdateOptions().upsert(true)
         );
-        System.out.println(uid);
+        //reget
+        FindIterable <Document> res =  DbCon.mongodb.getCollection(Config.NotifyConnection).find(
+                new Document("uid", uid)
+        );
+        if (!res.iterator().hasNext()) {
+            HttpUtil.writeResp(resp, 2);
+            return;
+        }
+        Document doc = res.iterator().next();
         String [] notify_list = new String[]{};
         notify_list = ((List <String>)doc.get("notify_list")).toArray(notify_list);
         System.out.println(notify_list.length);

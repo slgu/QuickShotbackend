@@ -66,15 +66,14 @@ public class TopicCreateServlet extends HttpServlet {
             return;
         }
         Part filePart = req.getPart("file"); // Retrieves <input type="file" name="file">
-        if (!filePart.getContentType().equals("video/mp4")) {
+        if (filePart == null || !filePart.getContentType().equals("video/mp4")) {
             HttpUtil.writeResp(resp, 4);
             return;
         }
         InputStream fileContent = filePart.getInputStream();
 
         Part imgPart = req.getPart("image");
-        System.out.println(imgPart.getContentType());
-        if (!imgPart.getContentType().equals("image/png")) {
+        if (imgPart == null || !imgPart.getContentType().equals("image/png")) {
             HttpUtil.writeResp(resp, 4);
             return;
         }
@@ -95,8 +94,8 @@ public class TopicCreateServlet extends HttpServlet {
         topic.setLon(lon);
         topic.setTitle(title);
         topic.setDesc(desc);
-        topic.setImg_uid(Config.S3_URL + img_uid);
-        topic.setVideo_uid(Config.S3_URL + video_uid);
+        topic.setImg_uid(Config.S3_IMG_URL + img_uid);
+        topic.setVideo_uid(Config.S3_VIDEO_URL + video_uid);
         topic.setUser_uid(user_id);
         //store topic
         HashMap <String, Object> mp = new HashMap<String, Object>();
